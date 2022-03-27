@@ -1,5 +1,6 @@
 import 'package:final_year_project_mobile_app/pages/home.dart';
 import 'package:final_year_project_mobile_app/pages/login.dart';
+import 'package:final_year_project_mobile_app/pages/signup.dart';
 import 'package:final_year_project_mobile_app/theme/apptheme.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: AppTheme.theme,
-      home: const LoginPage(),
+      home: const SignupPage(),
     );
   }
 }
