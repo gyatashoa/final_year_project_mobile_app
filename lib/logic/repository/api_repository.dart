@@ -37,6 +37,57 @@ class ApiRepository {
     return response;
   }
 
+  Future getSymptoms() async {
+    var response;
+    try {
+      var symptomsUrl = '${baseUrl}predictions/symptoms';
+      var res = await dio.get(symptomsUrl);
+      response = returnResponse(res);
+    } on SocketException {
+      throw FetchDataException('No Internet Connection');
+    }
+    return response;
+  }
+
+  Future predict(List<String> symptoms, String accessToken) async {
+    var response;
+    try {
+      var predictionUrl = baseUrl + 'predictions/predict';
+      var res = await dio.request(predictionUrl,
+          data: {'symptoms': symptoms},
+          options: Options(
+            headers: {'Authorization': 'Bearer ' + accessToken},
+          ));
+    } on SocketException {
+      throw FetchDataException('No Internet Connection');
+    }
+    return response;
+  }
+
+  Future refreshMyToken(String refreshToken) async {
+    var response;
+    try {
+      var baseRefreshTokenUrl = baseUrl + 'auth/refresh';
+      var res = await dio.get(baseRefreshTokenUrl,
+          options:
+              Options(headers: {'Authorization': 'Bearer ' + refreshToken}));
+      response = returnResponse(res);
+    } on SocketException {
+      throw FetchDataException('No Internet Connection');
+    }
+    return response;
+  }
+
+  //TODO: implement on server first
+  // Future getMyPredtictions(String accessToken) async {
+
+  //   // var response;
+  //   // try {} on SocketException {
+  //   //   throw FetchDataException('No Internet Connection');
+  //   // }
+  //   // return response;
+  // }
+
   dynamic returnResponse(Response response) {
     switch (response.statusCode) {
       case 200:

@@ -8,6 +8,9 @@ const errorMessage = {'message': 'error'};
 const testPath = 'test';
 const testData = {'data': 'sample data'};
 const header = {'Content-Type': 'application/json'};
+const authHeader = {
+  'Authorization': ['Bearer accessToken']
+};
 const loginSuccessResponse = {
   'tokens': {
     'access': 'access token',
@@ -47,7 +50,7 @@ void main() {
   final dio = Dio();
   late DioError dioErrorForLogin;
   late DioError dioErrorForSignup;
-  final String baseUrl =
+  const String baseUrl =
       'https://prediction-disease-test.herokuapp.com/api/v1/';
   final DioAdapter dioAdapter = DioAdapter(dio: dio);
 
@@ -108,6 +111,17 @@ void main() {
         });
       });
 
+      group('- Refresh Token', () {
+        test('- Refresh user access token with refresh token', () {
+          dioAdapter.onGet(baseUrl + 'auth/refresh', (server) {
+            return server.reply(200, {'access_token': 'accessToken'});
+          }, headers: {'Authorization': 'Bearer refresh Token'});
+          final repo = ApiRepository(dio: dio);
+          expect(() async => repo.refreshMyToken('refresh Token'),
+              returnsNormally);
+        });
+      });
+
       group('- SignUp', () {
         test('- SignUp with invalid credentials', () async {
           dioAdapter.onPost(
@@ -124,6 +138,7 @@ void main() {
             throwsA(isA<DioError>()),
           );
         });
+
         test('- SignUp with valid credentials', () {
           dioAdapter.onPost(
             baseUrl + 'auth/signup',
@@ -139,6 +154,56 @@ void main() {
           final repo = ApiRepository(dio: dio);
           expect(() async => await repo.signUp(userDetails), returnsNormally);
         });
+      });
+    });
+
+    group('- Prediction Route Test', () {
+      group('- Symptoms', () {
+        test('- Get all Symptoms with valid response', () {
+          dioAdapter.onGet('${baseUrl}predictions/symptoms', (server) {
+            server.reply(
+              200,
+              {
+                'symptoms': [
+                  'headache',
+                  'diarrhea',
+                  'fever',
+                ]
+              },
+            );
+          });
+          final repo = ApiRepository(dio: dio);
+          expect(() async => repo.getSymptoms(), returnsNormally);
+        });
+
+        test('- Get all Symptoms with invalid response', () {
+          dioAdapter.onGet('${baseUrl}predictions/symptoms', (server) {
+            return server.throws(
+                400,
+                DioError(
+                    requestOptions: RequestOptions(
+                  path: '${baseUrl}predictions/symptoms',
+                )));
+          });
+          final repo = ApiRepository(dio: dio);
+          expect(() async => repo.getSymptoms(), throwsA(isA<DioError>()));
+        });
+      });
+
+      group('- Predictions', () {
+        test('Make Preditions', () {
+          final repo = ApiRepository(dio: dio);
+          expect(
+              () async => await repo
+                  .predict(['fever', 'vomiting', 'headache'], 'access token'),
+              returnsNormally);
+        });
+
+        //TODO: Implement on the backend first
+        // test('- Get My Predictions', () {
+        //   dioAdapter.onGet(baseUrl+'')
+        //   expect('', ' sdads');
+        // });
       });
     });
   });
