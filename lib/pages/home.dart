@@ -16,7 +16,7 @@ class Home extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: BlocBuilder<NavbarCubit, NavbarCubitState>(
-            builder: (context, state) => Text(tabView[state.index].title)),
+            builder: (context, state) => Text('')),
       ),
       body: BlocBuilder<NavbarCubit, NavbarCubitState>(
         builder: (context, state) {
