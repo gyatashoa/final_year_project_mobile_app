@@ -23,10 +23,13 @@ class AppTheme {
               fontWeight: FontWeight.w500,
               fontSize: 12,
               color: Colors.black.withOpacity(.5)),
+          // bodyMedium: TextSty,
           headline1: const TextStyle(
               fontWeight: FontWeight.w600,
               color: Color(0xff0172C0),
               fontSize: 36),
+          headline2: const TextStyle(
+              fontWeight: FontWeight.w400, color: Colors.white, fontSize: 34),
         ));
   }
 }
