@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:final_year_project_mobile_app/exceptions/exceptions.dart';
+import 'package:final_year_project_mobile_app/models/user.dart';
 
 class ApiRepository {
   final Dio dio;
@@ -23,6 +24,8 @@ class ApiRepository {
     }
     return response;
   }
+
+  Future signUp(User user) async {}
 
   dynamic returnResponse(Response response) {
     switch (response.statusCode) {
