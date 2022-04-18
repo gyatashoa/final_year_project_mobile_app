@@ -6,6 +6,7 @@ class User {
   final String firstName;
   final String lastName;
   final String email;
+  final String password;
   final DateTime dob;
   final String? otherName;
   final Gender gender;
@@ -17,6 +18,7 @@ class User {
     required this.firstName,
     required this.lastName,
     required this.email,
+    required this.password,
     required this.dob,
     this.otherName,
     required this.gender,
@@ -30,6 +32,7 @@ class User {
     String? firstName,
     String? lastName,
     String? email,
+    String? password,
     DateTime? dob,
     String? otherName,
     Gender? gender,
@@ -42,6 +45,7 @@ class User {
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       email: email ?? this.email,
+      password: password ?? this.password,
       dob: dob ?? this.dob,
       otherName: otherName ?? this.otherName,
       gender: gender ?? this.gender,
@@ -58,13 +62,14 @@ class User {
     user.addAll({'first_name': firstName});
     user.addAll({'last_name': lastName});
     user.addAll({'email': email});
-    user.addAll({'dob': dob.millisecondsSinceEpoch});
+    user.addAll({'password': password});
+    user.addAll({'dob': dob.toIso8601String()});
     if (otherName != null) {
       user.addAll({'other_name': otherName});
     }
     user.addAll({'gender': gender.getValue});
-    user.addAll({'created_at': createdAt.millisecondsSinceEpoch});
-    user.addAll({'updated_at': updatedAt.millisecondsSinceEpoch});
+    user.addAll({'created_at': createdAt.toIso8601String()});
+    user.addAll({'updated_at': updatedAt.toIso8601String()});
     tokens.addAll({'access': accessToken});
     tokens.addAll({'refresh': refreshToken});
     final map = <String, dynamic>{};
@@ -73,13 +78,30 @@ class User {
     return map;
   }
 
+  Map<String, dynamic> toMapForResgistration() {
+    final map = <String, dynamic>{};
+    map.addAll({'first_name': firstName});
+    map.addAll({'last_name': lastName});
+    map.addAll({'email': email});
+    map.addAll({'password': password});
+    map.addAll({'dob': dob.toIso8601String()});
+    if (otherName != null) {
+      map.addAll({'other_name': otherName});
+    }
+    map.addAll({'gender': gender.getValue});
+    map.addAll({'created_at': createdAt.toIso8601String()});
+    map.addAll({'updated_at': updatedAt.toIso8601String()});
+    return map;
+  }
+
   factory User.fromMap(Map<String, dynamic> map) {
     Map<String, dynamic> user = map['user'];
-    Map<String, String> tokens = map['tokens'];
+    Map<String, String> tokens = map['tokens'] ?? {} as Map<String, String>;
     return User(
       firstName: user['firstName'] ?? '',
       lastName: user['lastName'] ?? '',
       email: user['email'] ?? '',
+      password: user['password'] ?? '',
       dob: DateTime.parse(user['dob']),
       otherName: user['otherName'],
       gender: user['gender'] == 'MALE' ? Gender.MALE : Gender.FEMALE,

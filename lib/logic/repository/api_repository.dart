@@ -25,7 +25,17 @@ class ApiRepository {
     return response;
   }
 
-  Future signUp(User user) async {}
+  Future signUp(Map<String, dynamic> data) async {
+    var response;
+    try {
+      var signUpUrl = '${baseUrl}auth/signup';
+      var res = await dio.post(signUpUrl, data: data);
+      response = returnResponse(res);
+    } on SocketException {
+      throw FetchDataException('No Internet Connection');
+    }
+    return response;
+  }
 
   dynamic returnResponse(Response response) {
     switch (response.statusCode) {
